@@ -14,3 +14,23 @@ function Loader(element: Element) {
         }
     }, 300)
 }
+
+// Generating Text Output Periodically
+function TypeText(element: Element, text: string) {
+    let index = 0;
+    let interval = setInterval(() => {
+        if (index < text.length) {
+            element.innerHTML += text.charAt(index)
+            index++
+        } else {
+            clearInterval(interval)
+        }
+    }, 20)
+}
+
+// Unique ID for every message
+function GenerateUniqueId() {
+    const timeStamp: number = Date.now()
+    const randomNumber: number = Math.random()
+    const hexaDecimalString: string = randomNumber.toString(16)
+}
