@@ -68,11 +68,7 @@ const handleSubmit = async (event: Event): Promise<void | Error> => {
 
     // adding user's chat stripe
     if (!chatContainer) return Error(`Form element error`)
-    chatContainer.innerHTML += chatStripe(
-        false,
-        data.get('promt'),
-        generateUniqueId()
-    )
+    chatContainer.innerHTML += chatStripe(false, data.get('promt'))
     form.reset()
 
     // adding bot's chat stripe
