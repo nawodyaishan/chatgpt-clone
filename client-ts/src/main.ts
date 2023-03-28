@@ -56,8 +56,8 @@ function chatStripe(
     </div>`
 }
 
-const handleSubmit = async (e) => {
-    e.preventDefault()
+const handleSubmit = async (event: Event): Promise<void | Error> => {
+    event.preventDefault()
 
     if (!form) return Error(`Form element error`)
     const data: FormData = new FormData(form)
@@ -65,7 +65,19 @@ const handleSubmit = async (e) => {
     // adding user's chat stripe
     if (!chatContainer) return Error(`Form element error`)
     chatContainer.innerHTML += chatStripe(false, data.get('promt'), generateUniqueId());
-
     form.reset()
 
+
+    // adding bot's chat stripe
+    if (!chatContainer) return Error(`Form element error`)
+    const uniqueId = generateUniqueId()
+    chatContainer.innerHTML += chatStripe(true, "", uniqueId);
+
+    chatContainer.scrollTop = chatContainer.scrollTop
+
+    const messageDiv = document.getElementById(generateUniqueId())
+
+    if (!messageDiv) return Error(`Form element error`)
+    loader(messageDiv)
 }
+
