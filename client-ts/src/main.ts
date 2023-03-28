@@ -1,5 +1,8 @@
-const form = document.querySelector('form')
-const chatContainer = document.querySelector('#chat_container')
+// import bot from '../assets/bot.svg'
+// import user from '../assets/user.svg'
+
+const form = document.querySelector('form');
+const chatContainer = document.querySelector('#chat_container');
 
 let loadInterval;
 
@@ -32,5 +35,7 @@ function TypeText(element: Element, text: string) {
 function GenerateUniqueId() {
     const timeStamp: number = Date.now()
     const randomNumber: number = Math.random()
-    const hexaDecimalString: string = randomNumber.toString(16)
+    const hexadecimalString: string = randomNumber.toString(16)
+
+    return `id-${timeStamp}-${hexadecimalString}`
 }
