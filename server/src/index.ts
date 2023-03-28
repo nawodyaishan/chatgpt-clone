@@ -47,9 +47,32 @@ app.get(`/`, async (req, res): Promise<void> => {
 
 app.post(`/`, async (req, res) => {
     try {
-        const promt = req.body.prompt
+        const prompt = req.body.prompt
 
-        const response = await openAi.createCompletion({})
+        const {Configuration, OpenAIApi} = require("openai");
+
+        const configuration = new Configuration({
+            apiKey: process.env.OPENAI_API_KEY,
+        });
+        const openai = new OpenAIApi(configuration);
+
+        const response = await openai.createCompletion({
+            model: "text-davinci-003",
+            prompt: `${prompt}`,
+            temperature: 0,
+            max_tokens: 64,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0,
+            stop: ["\"\"\""],
+        });
+
+        res.status(200).send({
+            bot: response.data.choices[0].text
+        })
+
     } catch (e) {
+        console.log(e)
+        res.status(500).send({e})
     }
 })
