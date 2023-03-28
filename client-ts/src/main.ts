@@ -42,7 +42,7 @@ function generateUniqueId() {
 
 function chatStripe(
     isAi: boolean,
-    aiGeneratedMessage: string,
+    aiGeneratedMessage: FormDataEntryValue | null,
     uniqueId: string
 ) {
     return
@@ -54,4 +54,18 @@ function chatStripe(
     <div class="message" id="${uniqueId}>${aiGeneratedMessage}" ></div>
     </div>
     </div>`
+}
+
+const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!form) return Error(`Form element error`)
+    const data: FormData = new FormData(form)
+
+    // adding user's chat stripe
+    if (!chatContainer) return Error(`Form element error`)
+    chatContainer.innerHTML += chatStripe(false, data.get('promt'), generateUniqueId());
+
+    form.reset()
+
 }
