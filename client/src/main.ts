@@ -52,11 +52,11 @@ function chatStripe(isAi: boolean, value: string, uniqueId?: string) {
       <div class="chat">
         <div class="profile">
           <img 
-            src=${isAi ? bot : user} 
+            src="${isAi ? bot : user}" 
             alt="${isAi ? 'bot' : 'user'}" 
           />
         </div>
-        <div class="message" id=${uniqueId}>${value}</div>
+        <div class="message" id="${uniqueId}">${value}</div>
       </div>
     </div>
   `
