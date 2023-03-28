@@ -1,13 +1,13 @@
-// import bot from '../assets/bot.svg'
-// import user from '../assets/user.svg'
+import bot from '../assets/bot.svg'
+import user from '../assets/user.svg'
 
-const form = document.querySelector('form');
-const chatContainer = document.querySelector('#chat_container');
+const form = document.querySelector('form')
+const chatContainer = document.querySelector('#chat_container')
 
-let loadInterval;
+let loadInterval
 
 function loader(element: Element) {
-    element.textContent = '';
+    element.textContent = ''
     loadInterval = setInterval(() => {
         element.textContent += '.'
 
@@ -20,7 +20,7 @@ function loader(element: Element) {
 
 // Generating Text Output Periodically
 function typeText(element: Element, text: string) {
-    let index = 0;
+    let index = 0
     let interval = setInterval(() => {
         if (index < text.length) {
             element.innerHTML += text.charAt(index)
@@ -38,4 +38,20 @@ function generateUniqueId() {
     const hexadecimalString: string = randomNumber.toString(16)
 
     return `id-${timeStamp}-${hexadecimalString}`
+}
+
+function chatStripe(
+    isAi: boolean,
+    aiGeneratedMessage: string,
+    uniqueId: string
+) {
+    return
+    `<div class="wrapper ${isAi && 'ai'}" >
+    <div class="chat" >
+    <div class="profile" >
+    <img src="${isAi ? bot : user}" alt="${isAi ? 'bot' : 'user'}">
+    </div>
+    <div class="message" id="${uniqueId}>${aiGeneratedMessage}" ></div>
+    </div>
+    </div>`
 }
