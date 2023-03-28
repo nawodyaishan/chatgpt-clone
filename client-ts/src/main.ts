@@ -1,26 +1,30 @@
 import bot from '../assets/bot.svg'
 import user from '../assets/user.svg'
 
-const form = document.querySelector('form')
-const chatContainer = document.querySelector('#chat_container')
+const form = document.querySelector('form') as HTMLFormElement
+const chatContainer = document.querySelector(
+    '#chat_container'
+) as HTMLDivElement
 
-let loadInterval: NodeJS.Timer
+let loadInterval: ReturnType<typeof setInterval>
 
-function loader(element: Element) {
+function loader(element: HTMLElement) {
     element.textContent = ''
+
     loadInterval = setInterval(() => {
+        // Update the text content of the loading indicator
         element.textContent += '.'
 
-        // resetting Text
+        // If the loading indicator has reached three dots, reset it
         if (element.textContent === '....') {
             element.textContent = ''
         }
     }, 300)
 }
 
-// Generating Text Output Periodically
-function typeText(element: Element, text: string) {
+function typeText(element: HTMLElement, text: string) {
     let index = 0
+
     let interval = setInterval(() => {
         if (index < text.length) {
             element.innerHTML += text.charAt(index)
@@ -31,84 +35,86 @@ function typeText(element: Element, text: string) {
     }, 20)
 }
 
-// Unique ID for every message
+// generate unique ID for each message div of bot
+// necessary for typing text effect for that specific reply
+// without unique ID, typing text will work on every element
 function generateUniqueId() {
-    const timeStamp: number = Date.now()
-    const randomNumber: number = Math.random()
-    const hexadecimalString: string = randomNumber.toString(16)
+    const timestamp = Date.now()
+    const randomNumber = Math.random()
+    const hexadecimalString = randomNumber.toString(16)
 
-    return `id-${timeStamp}-${hexadecimalString}`
+    return `id-${timestamp}-${hexadecimalString}`
 }
 
-function chatStripe(
-    isAi: boolean,
-    aiGeneratedMessage: FormDataEntryValue | null,
-    uniqueId?: string
-) {
+function chatStripe(isAi: boolean, value: string, uniqueId?: string) {
     return `
-        <div class="wrapper ${isAi && 'ai'}">
-            <div class="chat">
-                <div class="profile">
-                    <img 
-                      src=${isAi ? bot : user} 
-                      alt="${isAi ? 'bot' : 'user'}" 
-                    />
-                </div>
-                <div class="message" id=${uniqueId}>${aiGeneratedMessage}</div>
-            </div>
+    <div class="wrapper ${isAi ? 'ai' : ''}">
+      <div class="chat">
+        <div class="profile">
+          <img 
+            src=${isAi ? bot : user} 
+            alt="${isAi ? 'bot' : 'user'}" 
+          />
         </div>
-    `
+        <div class="message" id=${uniqueId}>${value}</div>
+      </div>
+    </div>
+  `
 }
 
-const handleSubmit = async (event: Event): Promise<void | Error> => {
-    event.preventDefault()
+const handleSubmit = async (e: Event) => {
+    e.preventDefault()
 
-    if (!form) return Error(`Form element error`)
-    const data: FormData = new FormData(form)
+    const data = new FormData(form)
 
-    // adding user's chat stripe
-    if (!chatContainer) return Error(`Form element error`)
-    chatContainer.innerHTML += chatStripe(false, data.get('promt'))
+    // user's chatstripe
+    chatContainer.innerHTML += chatStripe(false, data.get('prompt') as string)
+
+    // to clear the textarea input
     form.reset()
 
-    // adding bot's chat stripe
-    if (!chatContainer) return Error(`Form element error`)
+    // bot's chatstripe
     const uniqueId = generateUniqueId()
-    chatContainer.innerHTML += chatStripe(true, '', uniqueId)
+    chatContainer.innerHTML += chatStripe(true, ' ', uniqueId)
 
-    chatContainer.scrollTop += chatContainer.scrollTop
+    // to focus scroll to the bottom
+    chatContainer.scrollTop = chatContainer.scrollHeight
 
-    const messageDiv = document.getElementById(generateUniqueId())
+    // specific message div
+    const messageDiv = document.getElementById(uniqueId) as HTMLElement
 
-    if (!messageDiv) return Error(`Form element error`)
+    // messageDiv.innerHTML = "..."
     loader(messageDiv)
 
-    // fetch data from server
-    const response = await fetch(`http://localhost:3001`, {
-        method: `POST`,
-        headers: { 'Content-Type': 'application/json' },
+    const response = await fetch('http://localhost:3001/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
             prompt: data.get('prompt'),
         }),
     })
 
     clearInterval(loadInterval)
-    messageDiv.innerHTML = ''
+    messageDiv.innerHTML = ' '
 
     if (response.ok) {
         const data = await response.json()
-        const parsedData = data.bot.trim()
+        const parsedData = data.bot.trim() // trims any trailing spaces/'\n'
+
         typeText(messageDiv, parsedData)
     } else {
-        const error = await response.text()
-        messageDiv.innerHTML = `Something Went Wrong ${error}`
+        const err = await response.text()
+
+        messageDiv.innerHTML = 'Something went wrong'
+        alert(err)
     }
 }
 
-// Listener for submit events
-form?.addEventListener('submit', handleSubmit)
-form?.addEventListener('keyup', (event: KeyboardEvent) => {
-    if (event.keyCode === 13) {
-        handleSubmit(event)
+form.addEventListener('submit', handleSubmit)
+form.addEventListener('keyup', (e: KeyboardEvent) => {
+    if (e.keyCode === 13) {
+        handleSubmit(e)
     }
 })
