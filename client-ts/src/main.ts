@@ -43,17 +43,21 @@ function generateUniqueId() {
 function chatStripe(
     isAi: boolean,
     aiGeneratedMessage: FormDataEntryValue | null,
-    uniqueId: string
+    uniqueId?: string
 ) {
-    return
-    ;`<div class="wrapper ${isAi && 'ai'}" >
-    <div class="chat" >
-    <div class="profile" >
-    <img src="${isAi ? bot : user}" alt="${isAi ? 'bot' : 'user'}">
-    </div>
-    <div class="message" id="${uniqueId}>${aiGeneratedMessage}" ></div>
-    </div>
-    </div>`
+    return `
+        <div class="wrapper ${isAi && 'ai'}">
+            <div class="chat">
+                <div class="profile">
+                    <img 
+                      src=${isAi ? bot : user} 
+                      alt="${isAi ? 'bot' : 'user'}" 
+                    />
+                </div>
+                <div class="message" id=${uniqueId}>${aiGeneratedMessage}</div>
+            </div>
+        </div>
+    `
 }
 
 const handleSubmit = async (event: Event): Promise<void | Error> => {
@@ -76,7 +80,7 @@ const handleSubmit = async (event: Event): Promise<void | Error> => {
     const uniqueId = generateUniqueId()
     chatContainer.innerHTML += chatStripe(true, '', uniqueId)
 
-    chatContainer.scrollTop = chatContainer.scrollTop
+    chatContainer.scrollTop += chatContainer.scrollTop
 
     const messageDiv = document.getElementById(generateUniqueId())
 
