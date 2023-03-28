@@ -1,11 +1,7 @@
-import bot from '../assets/bot.svg'
-import user from '../assets/user.svg'
-
-
 const form = document.querySelector('form')
 const chatContainer = document.querySelector('#chat_container')
 
-let loadInterval
+let loadInterval: NodeJS.Timer
 
 function loader(element: Element) {
     element.textContent = ''
@@ -47,15 +43,16 @@ function chatStripe(
     uniqueId: string
 ) {
     return
-    `<div class="wrapper ${isAi && 'ai'}" >
+      ;
+    `<div class="wrapper ${isAi && '"ai"" >
     <div class="chat" >
     <div class="profile" >
-    <img src="${isAi ? bot : user}" alt="${isAi ? 'bot' : 'user'}">
+    <img src="${isAi ? bot : user}" alt="${isAi ? '"bot": '"user"">
     </div>
     <div class="message" id="${uniqueId}>${aiGeneratedMessage}" ></div>
     </div>
     </div>`
-}
+;}
 
 const handleSubmit = async (event: Event): Promise<void | Error> => {
     event.preventDefault()
@@ -65,14 +62,17 @@ const handleSubmit = async (event: Event): Promise<void | Error> => {
 
     // adding user's chat stripe
     if (!chatContainer) return Error(`Form element error`)
-    chatContainer.innerHTML += chatStripe(false, data.get('promt'), generateUniqueId());
+    chatContainer.innerHTML += chatStripe(
+      false,
+      data.get('promt'),
+      generateUniqueId()
+    )
     form.reset()
-
 
     // adding bot's chat stripe
     if (!chatContainer) return Error(`Form element error`)
     const uniqueId = generateUniqueId()
-    chatContainer.innerHTML += chatStripe(true, "", uniqueId);
+    chatContainer.innerHTML += chatStripe(true, '', uniqueId)
 
     chatContainer.scrollTop = chatContainer.scrollTop
 
@@ -80,6 +80,27 @@ const handleSubmit = async (event: Event): Promise<void | Error> => {
 
     if (!messageDiv) return Error(`Form element error`)
     loader(messageDiv)
+
+    // fetch data from server
+    const response = await fetch(`http://localhost:3001`, {
+        method: `POST`,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            prompt: data.get('prompt'),
+        }),
+    })
+
+    clearInterval(loadInterval)
+    messageDiv.innerHTML = ''
+
+    if (response.ok) {
+        const data = await response.json()
+        const parsedData = data.bot.trim()
+        typeText(messageDiv, parsedData)
+    } else {
+        const error = await response.text()
+        messageDiv.innerHTML = `Something Went Wrong ${error}`
+    }
 }
 
 // Listener for submit events
