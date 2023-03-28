@@ -1,3 +1,6 @@
+import bot from '../assets/bot.svg'
+import user from '../assets/user.svg'
+
 const form = document.querySelector('form')
 const chatContainer = document.querySelector('#chat_container')
 
@@ -43,16 +46,15 @@ function chatStripe(
     uniqueId: string
 ) {
     return
-      ;
-    `<div class="wrapper ${isAi && '"ai"" >
+    ;`<div class="wrapper ${isAi && 'ai'}" >
     <div class="chat" >
     <div class="profile" >
-    <img src="${isAi ? bot : user}" alt="${isAi ? '"bot": '"user"">
+    <img src="${isAi ? bot : user}" alt="${isAi ? 'bot' : 'user'}">
     </div>
     <div class="message" id="${uniqueId}>${aiGeneratedMessage}" ></div>
     </div>
     </div>`
-;}
+}
 
 const handleSubmit = async (event: Event): Promise<void | Error> => {
     event.preventDefault()
@@ -63,9 +65,9 @@ const handleSubmit = async (event: Event): Promise<void | Error> => {
     // adding user's chat stripe
     if (!chatContainer) return Error(`Form element error`)
     chatContainer.innerHTML += chatStripe(
-      false,
-      data.get('promt'),
-      generateUniqueId()
+        false,
+        data.get('promt'),
+        generateUniqueId()
     )
     form.reset()
 
