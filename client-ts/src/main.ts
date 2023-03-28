@@ -6,7 +6,7 @@ const chatContainer = document.querySelector('#chat_container');
 
 let loadInterval;
 
-function Loader(element: Element) {
+function loader(element: Element) {
     element.textContent = '';
     loadInterval = setInterval(() => {
         element.textContent += '.'
@@ -19,7 +19,7 @@ function Loader(element: Element) {
 }
 
 // Generating Text Output Periodically
-function TypeText(element: Element, text: string) {
+function typeText(element: Element, text: string) {
     let index = 0;
     let interval = setInterval(() => {
         if (index < text.length) {
@@ -32,7 +32,7 @@ function TypeText(element: Element, text: string) {
 }
 
 // Unique ID for every message
-function GenerateUniqueId() {
+function generateUniqueId() {
     const timeStamp: number = Date.now()
     const randomNumber: number = Math.random()
     const hexadecimalString: string = randomNumber.toString(16)
