@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run kill-ports && tsc && nodemon dist/index.js",
+    "dev": "tsc --watch",
+    "start": "npm run kill-ports && nodemon dist/index.js --watch",
     "kill-ports": "npx kill-port 3000 3001"
   },
   "keywords": [],

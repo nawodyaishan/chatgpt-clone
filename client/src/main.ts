@@ -64,7 +64,7 @@ function chatStripe(isAi: boolean, value: string, uniqueId?: string) {
 
 const handleSubmit = async (e: Event) => {
     e.preventDefault()
-
+    console.log(`🤢🤢🤢 Handle  Submit called`)
     const data = new FormData(form)
 
     // user's chatstripe
