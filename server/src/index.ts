@@ -50,7 +50,7 @@ app.post(`/`, async (req, res) => {
             bot: response.data.choices[0].text,
         })
     } catch (e) {
-        // console.log(e)
+        console.log(e.response.data)
         res.status(500).send({ e })
     }
 })
